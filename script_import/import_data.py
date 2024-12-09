@@ -21,10 +21,10 @@ TARGET_FILES = [
 ]
 
 # Banco de dados SQLite
-DB_FILE = "database.db"
+DB_FILE = "database.bd"
 
 # Configuração do banco de dados SQLite
-DATABASE_URI = "sqlite:///database.db"
+DATABASE_URI = "sqlite:///database.bd"
 engine = create_engine(DATABASE_URI)
 
 def importar_dados_companhias_abertas():
