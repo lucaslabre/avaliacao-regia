@@ -38,7 +38,7 @@ def importar_dados_companhias_abertas():
 
     # Conecta ao banco de dados SQLite
     conn = sqlite3.connect(DB_FILE)
-    df.to_sql("cad_cia_aberta", conn, if_exists="replace", index=False)
+    df.to_sql("cad_cia_aberta", conn, if_exists="replace", index=True)
     conn.close()
     print("Dados das Companhias Abertas importados e salvos no banco de dados com sucesso.")
 
@@ -69,7 +69,7 @@ def importar_dados_formulario_referencia():
                 # Ler os dados com pandas
                 df = pd.read_csv(file_path, sep=';', encoding='latin1')
                 table_name = os.path.splitext(target_file)[0]  # Nome da tabela baseado no nome do arquivo
-                df.to_sql(table_name, con=engine, if_exists='replace', index=False)
+                df.to_sql(table_name, con=engine, if_exists='replace', index=True)
             else:
                 return print(f"Arquivo {target_file} não encontrado no ZIP extraído.")
 
