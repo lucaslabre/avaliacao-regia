@@ -10,6 +10,14 @@
 4. Inicializar a aplicação
     - ```python .\script_import\import_data.py```
 
+# Passos para executar a aplicação web.
+
+1. Executar a aplicação Flask
+    - ```python .\run.py```
+
+2. Abrir o navegador
+    - http://127.0.0.1:5000
+
 # Tecnologias utilizadas
 
 * flask 
