@@ -8,13 +8,49 @@
     </head>
 
     <body>
+
+        {% block content %}
         <div class="container">
             <h1 class="mt-5">Companhias Abertas (B3)</h1>
 
-            <div class="table-responsive">
-                {{ table|safe }}
-            </div>
 
+
+            <table class="table-responsive dataframe table table-bordered table-striped" id="tabela-companhias">
+                <thead>
+                    <tr>
+                        <th>Actions</th>
+                        {% for column in table.columns %}
+                            <th>{{ column }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in table.values %}
+                    <tr data-id="{{ row[0] }}"> 
+                        <form action="{{ url_for('main.update_table',name_table = 'cad_cia_aberta' , row_id=row[0]) }}" method="POST">
+                            <td>
+                                <button type="submit" class="btn btn-primary">Atualizar</button>
+                            </td>
+                            
+                            {% for cell in row %}
+                            {% if table.columns[loop.index0] == 'index' %}
+                                <td> {{ cell }}</td>
+                            {% else %}
+                                <td><input type="text" name="{{ table.columns[loop.index0] }}" value="{{ cell }}"></td>
+                            {% endif %}
+                            {% endfor %}
+                        </form>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            
+            <!-- <div class="table-responsive">
+                {{ table|safe }}
+            </div> -->
         </div>
+        {% endblock %}
+
     </body>
 </html>
+
