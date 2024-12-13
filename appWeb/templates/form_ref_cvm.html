@@ -2,6 +2,11 @@
 
 {% block body %}
     <h1 class="mt-5">{{ title_page }}</h1>
+
+    <form action="/" method="get" class="mt-3">
+        <button type="submit" class="btn btn-secondary">Voltar</button>
+    </form>
+
     <h2>Visualizador de dados</h2>
 
     <form action="/view_data/fre_cia_aberta_empregado_local_faixa_etaria_2024" method="get" class="mt-3">
@@ -18,7 +23,7 @@
 
     <h2>Dashboard Estatístico</h2>
 
-    <form action="/form_ref_cvm" method="get" class="mt-3">
+    <form action="/form_ref_cvm/dashboard" method="get" class="mt-3">
         <button type="submit" class="btn btn-primary">Exibir Dashboards</button>
     </form>
 

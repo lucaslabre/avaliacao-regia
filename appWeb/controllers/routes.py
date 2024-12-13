@@ -1,6 +1,7 @@
 import sqlite3
 from flask import Blueprint, redirect, render_template, request, url_for
 import pandas as pd
+import appWeb.controllers.dashboard_util as du
 
 main = Blueprint('main', __name__)
 
@@ -14,7 +15,6 @@ TABLE_NAMES_TITLE_PAGES = {
 # Função para conectar ao banco de dados
 def get_db_connection():
     conn = sqlite3.connect('database.bd')  
-    conn.row_factory = sqlite3.Row        # Permite acessar os dados como dicionário
     return conn
 
 
@@ -24,15 +24,27 @@ def index():
     return render_template('index.html')
 
 
+@main.route('/form_ref_cvm/dashboard')
+def dashboard():
+    try:
+        conn = get_db_connection()
+        func_gen = du.criar_dash_funcionarios_genero(conn)
+        conn.close()
+        return render_template('dashboard.html', plot1=func_gen)
+    except Exception as e:
+        return render_template("dashboard.html", error="Erro ao estabelecer conexão com banco de dados.")
+
+
 # Rota de visualização dos dados 
 @main.route('/view_data/<string:table_name>')
 def view_data(table_name):
     try:
     # Estabelece uma conexão com o banco de dados e realiza a query
         conn = get_db_connection()
-        query = f"SELECT * FROM {table_name} limit 3"
+        query = f"SELECT * FROM {table_name} limit 50"
         df = pd.read_sql_query(query, conn)
         conn.close()
+
         return render_template("view_companhias_abertas_b3.html", table=df, table_name=table_name, title_page=TABLE_NAMES_TITLE_PAGES[table_name])
 
     except Exception as e:

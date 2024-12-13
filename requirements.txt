@@ -2,3 +2,5 @@ Flask
 pandas 
 requests
 sqlalchemy
+plotly
+plotly.express
