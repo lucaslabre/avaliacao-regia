@@ -1,11 +1,9 @@
-import io
 import os
 import zipfile
 import requests
 import pandas as pd
 import sqlite3
 
-from sqlalchemy import create_engine
 
 # URL do arquivo CSV
 CSV_URL  = "https://dados.cvm.gov.br/dados/CIA_ABERTA/CAD/DADOS/cad_cia_aberta.csv"
@@ -20,12 +18,10 @@ TARGET_FILES = [
     "fre_cia_aberta_empregado_local_declaracao_genero_2024.csv"
 ]
 
-# Banco de dados SQLite
-DB_FILE = "database.bd"
 
-# Configuração do banco de dados SQLite
-DATABASE_URI = "sqlite:///database.bd"
-engine = create_engine(DATABASE_URI)
+def get_connection():
+    return sqlite3.connect('database.db')  
+
 
 def importar_dados_companhias_abertas():
     # Baixa o CSV
@@ -33,11 +29,10 @@ def importar_dados_companhias_abertas():
     response.raise_for_status()
     
     # Lê o conteúdo do CSV em um DataFrame
-    csv_content = io.StringIO(response.content.decode("latin1"))
-    df = pd.read_csv(csv_content, sep=";", encoding="latin1")
+    df = pd.read_csv(response.url, sep=";", encoding="latin1")
 
     # Conecta ao banco de dados SQLite
-    conn = sqlite3.connect(DB_FILE)
+    conn = get_connection()
     df.to_sql("cad_cia_aberta", conn, if_exists="replace", index=True)
     conn.close()
     print("Dados das Companhias Abertas importados e salvos no banco de dados com sucesso.")
@@ -69,14 +64,14 @@ def importar_dados_formulario_referencia():
                 # Ler os dados com pandas
                 df = pd.read_csv(file_path, sep=';', encoding='latin1')
                 table_name = os.path.splitext(target_file)[0]  # Nome da tabela baseado no nome do arquivo
-                df.to_sql(table_name, con=engine, if_exists='replace', index=True)
+                df.to_sql(table_name, con=get_connection(), if_exists='replace', index=True)
             else:
                 return print(f"Arquivo {target_file} não encontrado no ZIP extraído.")
 
         return print("Dados do Formulário de Referência importados e salvos no banco de dados com sucesso.")
 
     except Exception as e:
-        return print("Erro ao importar arquivos.")
+        return print("Erro ao importar arquivos.", e)
     finally:
         # Limpar arquivos temporários
         if os.path.exists(zip_path):
